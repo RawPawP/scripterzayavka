@@ -1,0 +1,809 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Путь скриптера</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Макет: шапка со ступенчатой «лестницей» из четырёх блоков → выбор уровня с чек-листом → сравнение → правила → галерея кода → критерии → заявка */
+:root{
+  --bg:#EDF0F6; --surface:#FFFFFF; --surface-2:#E2E7F0; --fg:#0E1829; --muted:#4F5C75; --line:#C9D1DF;
+  --t1:#14803F; --t2:#2159C8; --t3:#C25E00; --t4:#9A6B00; --on-t:#FFFFFF;
+  --code-bg:#F3F5FA; --c-kw:#A3278F; --c-str:#14803F; --c-num:#B04F00; --c-com:#5E6B85;
+  --font-display:'Unbounded',system-ui,sans-serif;
+  --font-body:'Manrope',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1220; --surface:#131C2E; --surface-2:#1B2640; --fg:#E8EDF7; --muted:#9AA7C0; --line:#27344F;
+    --t1:#4CD38A; --t2:#79A8FF; --t3:#FFA24D; --t4:#F5C94D; --on-t:#0B1220;
+    --code-bg:#0D1626; --c-kw:#F28BDB; --c-str:#7DDC9E; --c-num:#FFB86B; --c-com:#8593AE; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1220; --surface:#131C2E; --surface-2:#1B2640; --fg:#E8EDF7; --muted:#9AA7C0; --line:#27344F;
+  --t1:#4CD38A; --t2:#79A8FF; --t3:#FFA24D; --t4:#F5C94D; --on-t:#0B1220;
+  --code-bg:#0D1626; --c-kw:#F28BDB; --c-str:#7DDC9E; --c-num:#FFB86B; --c-com:#8593AE; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0;
+}
+.t1{--tc:var(--t1)} .t2{--tc:var(--t2)} .t3{--tc:var(--t3)} .t4{--tc:var(--t4)}
+.wrap{max-width:1120px;margin:0 auto}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--t2);outline-offset:2px}
+.mono{font-family:var(--font-mono)}
+.eyebrow{font-family:var(--font-mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:700;font-size:clamp(1.35rem,1rem + 1.5vw,2.05rem);line-height:1.2;letter-spacing:-.01em}
+p{margin:0}
+.lead{color:var(--muted);max-width:62ch}
+
+/* верхняя полоса */
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px 24px;flex-wrap:wrap;padding-block:20px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:1rem;text-decoration:none}
+.logo{font-family:var(--font-mono);font-weight:500;font-size:.95rem;line-height:1;padding:6px 8px;border-radius:4px;background:var(--fg);color:var(--bg);letter-spacing:-.02em}
+.nav{display:flex;gap:6px 18px;flex-wrap:wrap;font-family:var(--font-mono);font-size:.8rem}
+.nav a{text-decoration:none;color:var(--muted);padding:4px 0;border-bottom:2px solid transparent}
+.nav a:hover{color:var(--fg);border-color:var(--fg)}
+
+/* шапка */
+.hero{
+  display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:end;padding-block:28px 64px;position:relative;
+}
+.hero::before{
+  content:"";position:absolute;inset:0 -8px 0 -8px;z-index:-1;
+  background-image:radial-gradient(circle,var(--line) 1.6px,transparent 2.2px);background-size:22px 22px;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 90%);mask-image:linear-gradient(180deg,#000 0%,transparent 90%);
+}
+.hero h1{font-family:var(--font-display);font-weight:700;font-size:clamp(1.9rem,1.1rem + 3.6vw,3.6rem);line-height:1.08;letter-spacing:-.02em;margin-bottom:20px}
+.hero .lead{font-size:1.08rem;margin-bottom:28px}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.btn{font:inherit;font-weight:700;padding:12px 20px;border:2px solid var(--fg);background:var(--fg);color:var(--bg);border-radius:4px;cursor:pointer;text-decoration:none;display:inline-block;line-height:1.3}
+.btn.ghost{background:transparent;color:var(--fg)}
+.btn:hover{transform:translateY(-1px)}
+.stairs{display:flex;align-items:flex-end;gap:6px;max-width:460px;width:100%;justify-self:end}
+.step{
+  flex:1;min-width:0;height:var(--h);background:var(--tc);color:var(--on-t);position:relative;
+  padding:10px 9px;display:flex;flex-direction:column;justify-content:flex-end;border-radius:3px 3px 0 0;
+}
+.step::before{
+  content:"";position:absolute;left:8px;right:8px;top:-7px;height:7px;border-radius:3px 3px 0 0;
+  background:repeating-linear-gradient(90deg,var(--tc) 0 9px,transparent 9px 15px);
+}
+.step b{font-family:var(--font-display);font-size:1.5rem;line-height:1}
+.step span{font-family:var(--font-mono);font-size:.7rem;margin-top:6px;letter-spacing:.02em}
+
+/* секции */
+section{padding-block:56px}
+.sec-head{display:grid;gap:12px;margin-bottom:28px}
+
+/* выбор уровня */
+.tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.tab{
+  font:inherit;text-align:left;color:var(--fg);background:var(--surface);border:2px solid var(--line);border-top:6px solid var(--tc);
+  border-radius:4px;padding:12px 14px 14px;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0;
+}
+.tab:hover{border-color:var(--tc)}
+.tab[aria-pressed="true"]{border-color:var(--tc);background:color-mix(in srgb,var(--tc) 12%,var(--surface))}
+.tab .tn{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tab strong{font-family:var(--font-display);font-weight:500;font-size:.98rem;line-height:1.25}
+.tab .tp{font-family:var(--font-mono);font-size:.76rem;color:var(--muted);margin-top:4px}
+.panel{
+  background:var(--surface);border:2px solid var(--tc);border-radius:4px;margin-top:14px;
+  padding:clamp(18px,3vw,34px);display:grid;grid-template-columns:1.3fr 1fr;gap:clamp(22px,4vw,44px);
+}
+.panel>*{min-width:0}
+.panel h3{font-family:var(--font-display);font-weight:700;font-size:clamp(1.3rem,1rem + 1.2vw,1.8rem);line-height:1.2;color:var(--tc);margin-bottom:10px}
+.panel .tag{font-family:var(--font-mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.panel .lead{margin-bottom:20px}
+.prog{display:flex;align-items:center;gap:12px;font-family:var(--font-mono);font-size:.8rem;margin-bottom:6px}
+.bar{flex:1;height:10px;background:var(--surface-2);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;width:var(--w,0%);background:var(--tc);transition:width .25s}
+.checks{margin-top:10px}
+.chk{display:flex;gap:12px;padding:11px 0;border-top:1px solid var(--line);cursor:pointer;align-items:flex-start}
+.chk input{width:20px;height:20px;accent-color:var(--tc);margin:3px 0 0;flex:none;cursor:pointer}
+.chk span{min-width:0}
+.chk input:checked+span{color:var(--muted)}
+.ready{margin-top:14px;padding:11px 14px;background:color-mix(in srgb,var(--tc) 14%,var(--surface));border-left:5px solid var(--tc);font-weight:700}
+.ready a{color:var(--tc)}
+.side{display:grid;gap:26px;align-content:start}
+.side h4{font-family:var(--font-mono);font-weight:500;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+ul.sq{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+ul.sq li{position:relative;padding-left:20px}
+ul.sq li::before{content:"";position:absolute;left:0;top:.5em;width:9px;height:9px;background:var(--tc);border-radius:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips span{font-family:var(--font-mono);font-size:.76rem;padding:3px 8px;border:1.5px solid var(--line);border-radius:3px;background:var(--bg)}
+
+/* сравнение */
+.scroller{overflow-x:auto;border:2px solid var(--fg);border-radius:4px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:.93rem}
+th,td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+tr:last-child td,tr:last-child th{border-bottom:0}
+thead th{border-top:6px solid var(--tc);background:var(--surface);font-family:var(--font-display);font-weight:500;font-size:.85rem;line-height:1.25}
+tbody th{font-weight:700;width:19%;background:var(--surface-2)}
+td{width:20%}
+
+/* галерея кода */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.fbtn{font:inherit;font-family:var(--font-mono);font-size:.82rem;padding:8px 14px;border:2px solid var(--line);background:var(--surface);color:var(--fg);border-radius:4px;cursor:pointer}
+.fbtn[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));gap:16px}
+.work{display:flex;flex-direction:column;background:var(--surface);border:2px solid var(--line);border-radius:4px;overflow:hidden;min-width:0}
+.work .art{flex:1;min-width:0;display:flex}
+pre.code{
+  margin:0;padding:16px;flex:1;min-width:0;overflow-x:auto;background:var(--code-bg);
+  font-family:var(--font-mono);font-size:.8rem;line-height:1.65;tab-size:4;color:var(--fg);
+}
+pre.code code{font:inherit}
+.code .k{color:var(--c-kw)} .code .s{color:var(--c-str)} .code .n{color:var(--c-num)} .code .c{color:var(--c-com);font-style:italic}
+.work .meta{padding:14px 16px 16px;display:grid;gap:8px;border-top:5px solid var(--tc)}
+.badge{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tc);font-weight:500}
+.work h3{font-family:var(--font-display);font-weight:500;font-size:1rem;line-height:1.3}
+.stats{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--font-mono);font-size:.78rem;color:var(--muted)}
+.count{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);margin-top:14px}
+
+/* правила и критерии */
+.crit{border-top:2px solid var(--fg)}
+.crow{display:grid;grid-template-columns:230px 1fr;gap:8px 24px;padding:18px 0;border-bottom:1px solid var(--line)}
+.crow h3{font-family:var(--font-display);font-weight:500;font-size:1rem;margin-bottom:4px}
+.crow p{color:var(--muted);max-width:68ch}
+.crow p.mono{color:var(--fg);font-size:.82rem}
+
+/* заявка */
+.apply{display:grid;grid-template-columns:1fr 1fr;gap:clamp(22px,4vw,44px);align-items:start}
+.apply>*{min-width:0}
+ol.flow{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;gap:0}
+ol.flow li{counter-increment:s;position:relative;padding:0 0 22px 52px}
+ol.flow li::before{
+  content:counter(s);position:absolute;left:0;top:0;width:34px;height:34px;display:grid;place-items:center;
+  background:var(--fg);color:var(--bg);font-family:var(--font-display);font-weight:700;border-radius:4px;
+}
+ol.flow li::after{content:"";position:absolute;left:16px;top:38px;bottom:4px;width:2px;background:var(--line)}
+ol.flow li:last-child::after{display:none}
+ol.flow strong{display:block;margin-bottom:2px}
+ol.flow span{color:var(--muted)}
+.tpl{background:var(--surface);border:2px solid var(--fg);border-radius:4px;overflow:hidden}
+.tpl header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;background:var(--surface-2);border-bottom:2px solid var(--fg);font-family:var(--font-mono);font-size:.8rem}
+.tpl .btn{padding:6px 12px;font-size:.82rem;font-family:var(--font-mono)}
+.tpl pre{margin:0;padding:16px;font-family:var(--font-mono);font-size:.84rem;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
+footer{padding-block:36px 56px;border-top:2px solid var(--fg);color:var(--muted);font-size:.9rem;display:grid;gap:8px}
+
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr;gap:34px;padding-bottom:40px}
+  .stairs{justify-self:start}
+  .panel,.apply{grid-template-columns:1fr}
+  .crow{grid-template-columns:1fr}
+  section{padding-block:40px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .btn:hover{transform:none}
+  .bar i{transition:none}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top-of-page"><span class="logo" aria-hidden="true">&lt;/&gt;</span>Путь скриптера</a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="#roles">Роли</a><a href="#compare">Сравнение</a><a href="#rules">Правила</a><a href="#works">Примеры кода</a><a href="#criteria">Критерии</a><a href="#apply">Заявка</a>
+    </nav>
+  </header>
+
+  <main id="top-of-page">
+    <div class="hero">
+      <div>
+        <p class="eyebrow">Roblox Studio · Luau · система ролей</p>
+        <h1>Путь скриптера от первого print до топа</h1>
+        <p class="lead">Четыре роли: начинающий, средний, продвинутый и топовый скриптер. Для каждой есть список требований, примеры кода и шаблон заявки. Отмечай выполненное и смотри, сколько осталось до следующей роли.</p>
+        <div class="cta">
+          <a class="btn" href="#roles">Выбрать роль</a>
+          <a class="btn ghost" href="#works">Смотреть примеры кода</a>
+        </div>
+      </div>
+      <div class="stairs" aria-hidden="true">
+        <div class="step t1" style="--h:92px"><b>1</b><span>Начало</span></div>
+        <div class="step t2" style="--h:140px"><b>2</b><span>Средний</span></div>
+        <div class="step t3" style="--h:190px"><b>3</b><span>Продвин.</span></div>
+        <div class="step t4" style="--h:244px"><b>4</b><span>Топ</span></div>
+      </div>
+    </div>
+
+    <section id="roles">
+      <div class="sec-head">
+        <p class="eyebrow">Требования</p>
+        <h2>Что нужно для каждой роли</h2>
+        <p class="lead">Выбери уровень и отмечай пункты, которые уже выполнены. Отметки сохраняются в этом браузере.</p>
+      </div>
+      <div class="tabs" id="tabs"></div>
+      <div class="panel" id="panel"></div>
+    </section>
+
+    <section id="compare">
+      <div class="sec-head">
+        <p class="eyebrow">Сравнение</p>
+        <h2>Четыре роли рядом</h2>
+      </div>
+      <div class="scroller">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th class="t1">Начинающий</th>
+              <th class="t2">Средний</th>
+              <th class="t3">Продвинутый</th>
+              <th class="t4">Топовый</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>Систем в портфолио</th><td>5 скриптов</td><td>8 систем</td><td>12 систем</td><td>20 систем</td></tr>
+            <tr><th>Данные игрока</th><td>Не нужны</td><td>DataStore с pcall</td><td>UpdateAsync, защита от потери данных</td><td>Блокировка сессии, миграции</td></tr>
+            <tr><th>Клиент и сервер</th><td>Script и LocalScript</td><td>RemoteEvent и RemoteFunction</td><td>Проверка данных, ограничение частоты вызовов</td><td>Защита от эксплойтов на сервере</td></tr>
+            <tr><th>Код</th><td>Переменные, функции, события</td><td>ModuleScript, task library</td><td>ООП, --!strict, архитектура</td><td>Свои библиотеки, тесты, Git</td></tr>
+            <tr><th>Скорость</th><td>Нет ошибок в Output</td><td>Нет утечек, Disconnect</td><td>MicroProfiler, кеширование</td><td>Parallel Luau, стабильные 60 FPS</td></tr>
+            <tr><th>Как проверяют</th><td>5 скриптов, скриншоты, Explorer</td><td>8 систем и видео работы</td><td>Код-ревью и открытый Place</td><td>Place, репозиторий и тестовое на 48 часов</td></tr>
+            <tr><th>Готовые скрипты из Toolbox</th><td>Запрещены</td><td>Запрещены</td><td>Запрещены</td><td>Запрещены</td></tr>
+            <tr><th>Повторная заявка после отказа</th><td>через 7 дней</td><td>через 14 дней</td><td>через 21 день</td><td>через 30 дней</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="rules">
+      <div class="sec-head">
+        <p class="eyebrow">Правила</p>
+        <h2>Строгие правила выдачи ролей</h2>
+        <p class="lead">Эти условия действуют для всех уровней. Нарушение любого пункта ведёт к отказу.</p>
+      </div>
+      <div class="crit">
+        <div class="crow"><div><h3>Только своё</h3><p class="mono">Запрещено: Toolbox, чужой код</p></div><p>Весь код написан тобой. Скрипты из Toolbox, чужие системы и код, который ты не можешь объяснить, считаются чужими. Если это подтвердилось, заявку отклоняют и закрывают подачу на 30 дней.</p></div>
+        <div class="crow"><div><h3>Бэкдоры и скрытый код</h3><p class="mono">Снятие роли навсегда</p></div><p>Скрытые вызовы, require по чужому ID модуля, loadstring и любой код, который даёт кому-то доступ к игре, запрещены. За это роль снимают без права повторной подачи.</p></div>
+        <div class="crow"><div><h3>Роли по порядку</h3><p class="mono">Нельзя пропускать уровни</p></div><p>Сначала начинающий, потом средний и так далее. Заявку на следующую роль можно подать не раньше чем через 14 дней после получения предыдущей.</p></div>
+        <div class="crow"><div><h3>Одна попытка за срок</h3><p class="mono">7 / 14 / 21 / 30 дней</p></div><p>После отказа повторную заявку принимают только через срок из таблицы выше. Заявки, поданные раньше, не рассматривают.</p></div>
+        <div class="crow"><div><h3>Устная проверка</h3><p class="mono">Объясни и измени код</p></div><p>Модератор вправе открыть твой код и попросить объяснить его строка за строкой, а затем внести небольшое изменение в реальном времени. Отказ или неспособность объяснить приравниваются к отказу в роли.</p></div>
+        <div class="crow"><div><h3>Все пункты обязательны</h3><p class="mono">Без исключений</p></div><p>Роль выдают только при выполнении каждого пункта чек-листа. Если не хватает одного, заявку отклоняют, даже когда остальное сделано отлично.</p></div>
+        <div class="crow"><div><h3>Роль можно потерять</h3><p class="mono">Активность 60 дней</p></div><p>Роль снимают за плагиат, обман при проверке и нарушение правил сервера. Со среднего уровня и выше нужна активность: минимум одна новая система за 60 дней, иначе роль понижают на один уровень.</p></div>
+      </div>
+    </section>
+
+    <section id="works">
+      <div class="sec-head">
+        <p class="eyebrow">Примеры кода</p>
+        <h2>Как выглядит каждый уровень</h2>
+        <p class="lead">Два фрагмента на роль. Это короткие куски кода, которые показывают уровень, а не готовые системы. Количество строк и часов указано как ориентир.</p>
+      </div>
+      <div class="filters" id="filters">
+        <button class="fbtn" type="button" data-f="all" aria-pressed="true">Все</button>
+        <button class="fbtn" type="button" data-f="t1" aria-pressed="false">Начинающий</button>
+        <button class="fbtn" type="button" data-f="t2" aria-pressed="false">Средний</button>
+        <button class="fbtn" type="button" data-f="t3" aria-pressed="false">Продвинутый</button>
+        <button class="fbtn" type="button" data-f="t4" aria-pressed="false">Топовый</button>
+      </div>
+
+      <div class="gallery" id="gallery">
+
+        <article class="work t1" data-tier="t1">
+          <div class="art"><pre class="code" tabindex="0"><code>local door = script.Parent
+local isOpen = false
+
+door.ClickDetector.MouseClick:Connect(function()
+	isOpen = not isOpen
+	door.Transparency = if isOpen then 0.7 else 0
+	door.CanCollide = not isOpen
+end)</code></pre></div>
+          <div class="meta">
+            <span class="badge">Начинающий</span>
+            <h3>Дверь по клику</h3>
+            <p class="stats"><span>≈ 10 строк</span><span>20–30 минут</span></p>
+            <p class="chips"><span>ClickDetector</span><span>Transparency</span><span>CanCollide</span></p>
+          </div>
+        </article>
+
+        <article class="work t1" data-tier="t1">
+          <div class="art"><pre class="code" tabindex="0"><code>local trap = script.Parent
+local DAMAGE = 25
+local cooldown = {}
+
+trap.Touched:Connect(function(hit)
+	local humanoid = hit.Parent:FindFirstChildOfClass("Humanoid")
+	if not humanoid or cooldown[humanoid] then return end
+
+	cooldown[humanoid] = true
+	humanoid:TakeDamage(DAMAGE)
+	task.wait(1)
+	cooldown[humanoid] = nil
+end)</code></pre></div>
+          <div class="meta">
+            <span class="badge">Начинающий</span>
+            <h3>Ловушка с перезарядкой</h3>
+            <p class="stats"><span>≈ 12 строк</span><span>30–40 минут</span></p>
+            <p class="chips"><span>Touched</span><span>Humanoid</span><span>task.wait</span></p>
+          </div>
+        </article>
+
+        <article class="work t2" data-tier="t2">
+          <div class="art"><pre class="code" tabindex="0"><code>local Players = game:GetService("Players")
+local DataStoreService = game:GetService("DataStoreService")
+local store = DataStoreService:GetDataStore("PlayerData_v1")
+
+local function save(player)
+	local ok, err = pcall(function()
+		store:SetAsync("u_" .. player.UserId, player.leaderstats.Coins.Value)
+	end)
+	if not ok then
+		warn("Не удалось сохранить данные:", err)
+	end
+end
+
+Players.PlayerRemoving:Connect(save)
+
+game:BindToClose(function()
+	for _, player in Players:GetPlayers() do
+		save(player)
+	end
+end)</code></pre></div>
+          <div class="meta">
+            <span class="badge">Средний</span>
+            <h3>Сохранение монет</h3>
+            <p class="stats"><span>≈ 18 строк</span><span>2–3 часа</span></p>
+            <p class="chips"><span>DataStore</span><span>pcall</span><span>BindToClose</span></p>
+          </div>
+        </article>
+
+        <article class="work t2" data-tier="t2">
+          <div class="art"><pre class="code" tabindex="0"><code>local TweenService = game:GetService("TweenService")
+
+local menu = script.Parent.Menu
+local info = TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+local function show(visible: boolean)
+	local goal = { Position = UDim2.fromScale(0.5, visible and 0.5 or 1.2) }
+	TweenService:Create(menu, info, goal):Play()
+end
+
+script.Parent.Toggle.Activated:Connect(function()
+	local isHidden = menu.Position.Y.Scale > 1
+	show(isHidden)
+end)</code></pre></div>
+          <div class="meta">
+            <span class="badge">Средний</span>
+            <h3>Меню с плавной анимацией</h3>
+            <p class="stats"><span>≈ 14 строк</span><span>1–2 часа</span></p>
+            <p class="chips"><span>TweenService</span><span>UDim2</span><span>Activated</span></p>
+          </div>
+        </article>
+
+        <article class="work t3" data-tier="t3">
+          <div class="art"><pre class="code" tabindex="0"><code>--!strict
+local Players = game:GetService("Players")
+local Remote = game.ReplicatedStorage.Remotes.BuyItem
+
+local PRICES: { [string]: number } = { Sword = 100, Shield = 80 }
+local lastCall: { [Player]: number } = {}
+
+Remote.OnServerEvent:Connect(function(player: Player, itemName: unknown)
+	if typeof(itemName) ~= "string" then return end
+	local price = PRICES[itemName]
+	if not price then return end
+
+	local now = os.clock()
+	if now - (lastCall[player] or 0) &lt; 0.5 then return end
+	lastCall[player] = now
+
+	local stats = player:FindFirstChild("leaderstats")
+	local coins = stats and stats:FindFirstChild("Coins")
+	if not coins or not coins:IsA("IntValue") or coins.Value &lt; price then return end
+
+	coins.Value -= price
+	-- выдача предмета
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+	lastCall[player] = nil
+end)</code></pre></div>
+          <div class="meta">
+            <span class="badge">Продвинутый</span>
+            <h3>Безопасная покупка предмета</h3>
+            <p class="stats"><span>≈ 25 строк</span><span>3–4 часа</span></p>
+            <p class="chips"><span>--!strict</span><span>OnServerEvent</span><span>Проверка данных</span></p>
+          </div>
+        </article>
+
+        <article class="work t3" data-tier="t3">
+          <div class="art"><pre class="code" tabindex="0"><code>--!strict
+local Weapon = {}
+Weapon.__index = Weapon
+
+export type Weapon = typeof(setmetatable(
+	{} :: { damage: number, cooldown: number, _last: number },
+	Weapon
+))
+
+function Weapon.new(damage: number, cooldown: number): Weapon
+	return setmetatable({ damage = damage, cooldown = cooldown, _last = 0 }, Weapon)
+end
+
+function Weapon.canFire(self: Weapon): boolean
+	return os.clock() - self._last &gt;= self.cooldown
+end
+
+function Weapon.fire(self: Weapon, target: Humanoid)
+	if not self:canFire() then return end
+	self._last = os.clock()
+	target:TakeDamage(self.damage)
+end
+
+return Weapon</code></pre></div>
+          <div class="meta">
+            <span class="badge">Продвинутый</span>
+            <h3>Класс оружия на метатаблицах</h3>
+            <p class="stats"><span>≈ 22 строки</span><span>3–5 часов</span></p>
+            <p class="chips"><span>Метатаблицы</span><span>export type</span><span>ModuleScript</span></p>
+          </div>
+        </article>
+
+        <article class="work t4" data-tier="t4">
+          <div class="art"><pre class="code" tabindex="0"><code>--!strict
+local Signal = {}
+Signal.__index = Signal
+
+function Signal.new()
+	return setmetatable({ _handlers = {} :: { (...any) -&gt; () } }, Signal)
+end
+
+function Signal:Connect(fn: (...any) -&gt; ())
+	table.insert(self._handlers, fn)
+	return function()
+		local index = table.find(self._handlers, fn)
+		if index then
+			table.remove(self._handlers, index)
+		end
+	end
+end
+
+function Signal:Fire(...: any)
+	for _, fn in table.clone(self._handlers) do
+		task.spawn(fn, ...)
+	end
+end
+
+return Signal</code></pre></div>
+          <div class="meta">
+            <span class="badge">Топовый</span>
+            <h3>Собственная система событий</h3>
+            <p class="stats"><span>≈ 24 строки</span><span>4–6 часов с тестами</span></p>
+            <p class="chips"><span>Замыкания</span><span>task.spawn</span><span>table.clone</span></p>
+          </div>
+        </article>
+
+        <article class="work t4" data-tier="t4">
+          <div class="art"><pre class="code" tabindex="0"><code>--!strict
+local Janitor = {}
+Janitor.__index = Janitor
+
+function Janitor.new()
+	return setmetatable({ _items = {} :: { any } }, Janitor)
+end
+
+function Janitor:Add(item: any): any
+	table.insert(self._items, item)
+	return item
+end
+
+function Janitor:Destroy()
+	for _, item in self._items do
+		if typeof(item) == "RBXScriptConnection" then
+			item:Disconnect()
+		elseif typeof(item) == "Instance" then
+			item:Destroy()
+		elseif type(item) == "function" then
+			item()
+		end
+	end
+	table.clear(self._items)
+end
+
+return Janitor</code></pre></div>
+          <div class="meta">
+            <span class="badge">Топовый</span>
+            <h3>Очистка ресурсов без утечек</h3>
+            <p class="stats"><span>≈ 26 строк</span><span>4–6 часов с тестами</span></p>
+            <p class="chips"><span>Disconnect</span><span>typeof</span><span>table.clear</span></p>
+          </div>
+        </article>
+
+      </div>
+      <p class="count" id="count" aria-live="polite"></p>
+    </section>
+
+    <section id="criteria">
+      <div class="sec-head">
+        <p class="eyebrow">Критерии</p>
+        <h2>На что смотрят при проверке</h2>
+        <p class="lead">Эти шесть пунктов проверяют на любом уровне. Если два пункта ниже нормы, заявку отклоняют. Чем выше роль, тем строже оценка.</p>
+      </div>
+      <div class="crit">
+        <div class="crow"><div><h3>Читаемость</h3></div><p>Понятные имена переменных и функций, ровные отступы, комментарии там, где логика неочевидна. Одна функция решает одну задачу.</p></div>
+        <div class="crow"><div><h3>Безопасность</h3></div><p>Сервер не доверяет клиенту. Всё, что пришло из RemoteEvent, проверяется по типу, диапазону и правам игрока.</p></div>
+        <div class="crow"><div><h3>Обработка ошибок</h3></div><p>Вызовы DataStore и сетевые запросы обёрнуты в pcall. Нет ошибок и предупреждений в Output, проверки на nil стоят там, где значения могут отсутствовать.</p></div>
+        <div class="crow"><div><h3>Скорость</h3></div><p>Нет лишних циклов, события отключаются через Disconnect, ссылки на объекты кешируются. Тяжёлые вычисления не блокируют кадр.</p></div>
+        <div class="crow"><div><h3>Структура</h3></div><p>Серверный код лежит в ServerScriptService, клиентский в StarterPlayerScripts, общие модули в ReplicatedStorage. Повторяющийся код вынесен в ModuleScript.</p></div>
+        <div class="crow"><div><h3>Современный Luau</h3></div><p>Используется task library вместо wait, spawn и delay. Parent задаётся после настройки свойств. На высоких ролях добавляются типы и --!strict.</p></div>
+      </div>
+    </section>
+
+    <section id="apply">
+      <div class="sec-head">
+        <p class="eyebrow">Заявка</p>
+        <h2>Как получить роль</h2>
+      </div>
+      <div class="apply">
+        <ol class="flow">
+          <li><strong>Выбери роль</strong><span>Пройди чек-лист выше и отметь, что уже выполнено.</span></li>
+          <li><strong>Собери портфолио</strong><span>Код, видео работы и ссылка на Place. Для каждой системы напиши, что она делает и как устроена.</span></li>
+          <li><strong>Отправь заявку</strong><span>Скопируй шаблон справа, заполни все поля и отправь модераторам. Заявки с пустыми полями не рассматривают.</span></li>
+          <li><strong>Получи решение</strong><span>Модераторы выдадут роль или напишут причину отказа. Повторная заявка возможна только после срока из правил.</span></li>
+        </ol>
+        <div class="tpl">
+          <header><span>Шаблон заявки</span><button class="btn" type="button" id="copy">Скопировать</button></header>
+          <pre id="tpl" tabindex="0">Заявка на роль: Средний скриптер
+Ник в Roblox:
+Системы (код, видео, ссылка на файл или Place):
+1.
+2.
+3.
+Самая сложная система (что делает, сколько строк, сколько часов):
+Какие сервисы и приёмы использовал:
+Что хочу улучшить дальше:
+Подтверждаю: весь код мой, без Toolbox, и я могу объяснить каждую строку</pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Требования и сроки можно подогнать под ваш сервер. Фрагменты кода в галерее короткие и показывают уровень сложности, а не готовые системы.</p>
+    <p class="mono" id="copy-status" aria-live="polite"></p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var ROLES = [
+    {
+      id: 't1', name: 'Начинающий скриптер', tag: 'Основы Luau',
+      lead: 'Ты освоил основы Luau и пишешь небольшие рабочие скрипты без подсказок.',
+      reqs: [
+        'Знаешь типы данных Luau: number, string, boolean, table, nil',
+        'Уверенно пишешь if, for, while и свои функции',
+        'Работаешь с Instance: Parent, Name, свойства, FindFirstChild',
+        'Подключаешь события: Touched, MouseClick, PlayerAdded',
+        'Написал минимум 5 рабочих скриптов сам: дверь, ловушка, выдача предмета, таймер, кнопка в GUI',
+        'Различаешь Script, LocalScript и ModuleScript и знаешь, где каждый должен лежать',
+        'В Output нет ошибок, ни один скрипт не взят из Toolbox',
+        'Используешь local и понятные имена, комментируешь неочевидные места'
+      ],
+      submit: ['Текст 5 скриптов с описанием, что каждый делает', 'Скриншоты или видео работы скриптов в игре', 'Скриншот Explorer, на котором видно расположение скриптов', 'Ник в Roblox и файл или Place для проверки'],
+      perks: ['Роль «Начинающий скриптер»', 'Доступ к каналу вопросов по коду', 'Право показывать скрипты в общем канале'],
+      tools: ['print', 'warn', 'task.wait', 'Instance.new', 'Touched', 'PlayerAdded', 'Output']
+    },
+    {
+      id: 't2', name: 'Средний скриптер', tag: 'Законченные системы',
+      lead: 'Ты делаешь законченные системы с сохранением данных, связью клиента и сервера и аккуратным кодом.',
+      reqs: [
+        'Минимум 8 законченных систем, у каждой понятная задача',
+        'Используешь task.wait, task.spawn и task.delay вместо wait, spawn и delay',
+        'Сохраняешь и загружаешь данные через DataStore с pcall и повтором при ошибке',
+        'Связываешь клиент и сервер через RemoteEvent и RemoteFunction, понимаешь, что клиенту нельзя доверять',
+        'Выносишь общий код в ModuleScript и подключаешь через require, нет копий одного кода в разных скриптах',
+        'Умеешь работать с TweenService и интерфейсом из LocalScript',
+        'Отключаешь события через Disconnect там, где они больше не нужны, утечек нет',
+        'Ни одного скрипта из Toolbox, любые чужие модули указаны в заявке'
+      ],
+      submit: ['8 систем с кодом и описанием', 'Видео работы системы в игре', 'Пример сохранения данных с обработкой ошибок', 'Файл или Place, который модератор может открыть и проверить'],
+      perks: ['Роль «Средний скриптер»', 'Участие в командных проектах сервера', 'Право отвечать на вопросы новичков'],
+      tools: ['DataStoreService', 'pcall', 'RemoteEvent', 'ModuleScript', 'TweenService', 'task library']
+    },
+    {
+      id: 't3', name: 'Продвинутый скриптер', tag: 'Архитектура и безопасность',
+      lead: 'Ты проектируешь архитектуру, защищаешь сервер от клиента и думаешь о скорости и поддержке кода.',
+      reqs: [
+        'В портфолио от 12 систем, из них две крупные: инвентарь, боёвка, магазин или квесты',
+        'Сервер проверяет каждый RemoteEvent: тип данных, диапазон значений, права игрока и частоту вызовов',
+        'Делишь код на серверную, клиентскую и общую части, понятно, где что лежит',
+        'Пишешь классы на метатаблицах: __index, конструкторы, наследование',
+        'Используешь --!strict и аннотации типов в модулях',
+        'Защищаешь данные от потери: UpdateAsync или блокировка сессии, проверка перед записью',
+        'Профилируешь код через MicroProfiler и Script Performance, не держишь лишние циклы на Heartbeat',
+        'Дал не меньше 5 подробных код-ревью чужим скриптам',
+        'Участвовал минимум в одном командном проекте'
+      ],
+      submit: ['Код двух крупных систем с описанием архитектуры', 'Скриншоты MicroProfiler до и после оптимизации', 'Открытый для проверки Place', 'Ссылки на 5 код-ревью'],
+      perks: ['Роль «Продвинутый скриптер»', 'Приоритет в заказах и проектах', 'Право проводить код-ревью'],
+      tools: ['--!strict', 'Метатаблицы', 'UpdateAsync', 'RunService', 'MicroProfiler', 'Rojo']
+    },
+    {
+      id: 't4', name: 'Топовый скриптер', tag: 'Уровень игр',
+      lead: 'Твой код выдерживает реальных игроков и эксплойтеров, у тебя свои библиотеки, тесты и документация.',
+      reqs: [
+        'В портфолио от 20 систем, есть опубликованный Place с твоим кодом и реальными игроками',
+        'Сервер защищён от эксплойтов: нет доверия клиенту, ограничены частота вызовов, телепортация и значения',
+        'Написал свои библиотеки: система событий, очистка ресурсов, машина состояний',
+        'Работаешь с Rojo и Git, используешь линтер и форматтер',
+        'Покрываешь ключевые модули автотестами',
+        'Оптимизируешь код: 60 FPS при большом числе объектов и NPC, знаешь Parallel Luau и Actors',
+        'Пишешь документацию: README, типы, понятные имена и комментарии',
+        'Выполнил тестовое задание за 48 часов без Toolbox, его оценивают три модератора',
+        'За последние 3 месяца нет нарушений правил сервера',
+        'Дал не меньше 10 код-ревью и помогаешь новичкам'
+      ],
+      submit: ['Ссылка на опубликованный Place', 'Ссылка на репозиторий с кодом и README', 'Видеообзор архитектуры на 3–5 минут', 'Результат тестового задания'],
+      perks: ['Роль «Топовый скриптер»', 'Место в команде проектов сервера', 'Право вести заказы и наставлять других', 'Особый цвет роли'],
+      tools: ['Parallel Luau', 'Actors', 'Rojo', 'Git', 'TestEZ', 'Selene', 'StyLua']
+    }
+  ];
+
+  var KEY = 'ps-checks';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  var state = load();
+  var current = 't1';
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function role(id) { return ROLES.filter(function (r) { return r.id === id; })[0]; }
+  function checked(id) { var a = state[id]; return Array.isArray(a) ? a : []; }
+  function ul(a) { return '<ul class="sq">' + a.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'; }
+
+  var tabsEl = document.getElementById('tabs');
+  var panelEl = document.getElementById('panel');
+
+  function renderTabs() {
+    tabsEl.innerHTML = ROLES.map(function (r, i) {
+      return '<button type="button" class="tab ' + r.id + '" data-id="' + r.id + '" aria-pressed="' + (r.id === current) + '">' +
+        '<span class="tn">Уровень ' + (i + 1) + '</span><strong>' + esc(r.name) + '</strong>' +
+        '<span class="tp" data-tp="' + r.id + '"></span></button>';
+    }).join('');
+    ROLES.forEach(function (r) { updateTabCount(r.id); });
+  }
+  function updateTabCount(id) {
+    var el = tabsEl.querySelector('[data-tp="' + id + '"]');
+    if (el) el.textContent = checked(id).length + ' из ' + role(id).reqs.length + ' требований';
+  }
+
+  function renderPanel() {
+    var r = role(current), done = checked(current);
+    panelEl.className = 'panel ' + r.id;
+    panelEl.innerHTML =
+      '<div>' +
+        '<p class="tag">' + esc(r.tag) + '</p>' +
+        '<h3>' + esc(r.name) + '</h3>' +
+        '<p class="lead">' + esc(r.lead) + '</p>' +
+        '<div class="prog"><div class="bar"><i id="barfill"></i></div><span id="progtxt"></span></div>' +
+        '<div class="checks">' + r.reqs.map(function (q, i) {
+          return '<label class="chk"><input type="checkbox" id="chk-' + r.id + '-' + i + '" data-i="' + i + '"' + (done.indexOf(i) > -1 ? ' checked' : '') + '><span>' + esc(q) + '</span></label>';
+        }).join('') + '</div>' +
+        '<div id="ready" aria-live="polite"></div>' +
+      '</div>' +
+      '<div class="side">' +
+        '<div><h4>Что приложить к заявке</h4>' + ul(r.submit) + '</div>' +
+        '<div><h4>Что получаешь</h4>' + ul(r.perks) + '</div>' +
+        '<div><h4>Инструменты</h4><div class="chips">' + r.tools.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</div></div>' +
+      '</div>';
+    updateProgress();
+  }
+
+  function updateProgress() {
+    var r = role(current), n = checked(current).length, total = r.reqs.length;
+    var pct = Math.round(n / total * 100);
+    var fill = document.getElementById('barfill');
+    if (fill) fill.style.setProperty('--w', pct + '%');
+    var txt = document.getElementById('progtxt');
+    if (txt) txt.textContent = n + ' из ' + total + ' · ' + pct + '%';
+    var ready = document.getElementById('ready');
+    if (ready) {
+      ready.innerHTML = n === total ? '<p class="ready">Все требования выполнены. Можно <a href="#apply">подавать заявку</a>.</p>' : '';
+    }
+    updateTabCount(current);
+  }
+
+  tabsEl.addEventListener('click', function (e) {
+    var b = e.target.closest('.tab');
+    if (!b) return;
+    current = b.getAttribute('data-id');
+    Array.prototype.forEach.call(tabsEl.querySelectorAll('.tab'), function (t) {
+      t.setAttribute('aria-pressed', String(t.getAttribute('data-id') === current));
+    });
+    renderPanel();
+  });
+
+  panelEl.addEventListener('change', function (e) {
+    var inp = e.target;
+    if (!inp || inp.type !== 'checkbox') return;
+    var i = Number(inp.getAttribute('data-i'));
+    var a = checked(current).slice();
+    var at = a.indexOf(i);
+    if (inp.checked && at === -1) a.push(i);
+    if (!inp.checked && at > -1) a.splice(at, 1);
+    state[current] = a;
+    save();
+    updateProgress();
+  });
+
+  renderTabs();
+  renderPanel();
+
+  /* подсветка синтаксиса Luau */
+  var KW = 'local|function|end|if|then|else|elseif|for|in|do|while|repeat|until|return|not|and|or|nil|true|false|export|type|break|continue';
+  var RE = new RegExp('(--[^\\n]*)|("(?:[^"\\\\\\n]|\\\\.)*"|\'(?:[^\'\\\\\\n]|\\\\.)*\')|\\b(' + KW + ')\\b|\\b(\\d+(?:\\.\\d+)?)\\b', 'g');
+  function highlight(src) {
+    var out = '', last = 0, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(src)) !== null) {
+      out += esc(src.slice(last, m.index));
+      var cls = m[1] ? 'c' : m[2] ? 's' : m[3] ? 'k' : 'n';
+      out += '<span class="' + cls + '">' + esc(m[0]) + '</span>';
+      last = RE.lastIndex;
+    }
+    return out + esc(src.slice(last));
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('pre.code code'), function (el) {
+    try { el.innerHTML = highlight(el.textContent); } catch (e) {}
+  });
+
+  /* галерея */
+  var filters = document.getElementById('filters');
+  var works = Array.prototype.slice.call(document.querySelectorAll('#gallery .work'));
+  var countEl = document.getElementById('count');
+  function applyFilter(f) {
+    var shown = 0;
+    works.forEach(function (w) {
+      var ok = f === 'all' || w.getAttribute('data-tier') === f;
+      w.hidden = !ok;
+      if (ok) shown++;
+    });
+    countEl.textContent = 'Показано фрагментов: ' + shown + ' из ' + works.length;
+  }
+  filters.addEventListener('click', function (e) {
+    var b = e.target.closest('.fbtn');
+    if (!b) return;
+    Array.prototype.forEach.call(filters.querySelectorAll('.fbtn'), function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+    applyFilter(b.getAttribute('data-f'));
+  });
+  applyFilter('all');
+
+  /* шаблон заявки */
+  var copyBtn = document.getElementById('copy');
+  var tpl = document.getElementById('tpl');
+  var status = document.getElementById('copy-status');
+  function selectTpl() {
+    try {
+      var r = document.createRange(); r.selectNodeContents(tpl);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    } catch (e) {}
+  }
+  copyBtn.addEventListener('click', function () {
+    var text = tpl.innerText;
+    function ok() {
+      copyBtn.textContent = 'Скопировано';
+      status.textContent = 'Шаблон заявки скопирован.';
+      setTimeout(function () { copyBtn.textContent = 'Скопировать'; status.textContent = ''; }, 1800);
+    }
+    function fail() {
+      selectTpl();
+      status.textContent = 'Текст выделен. Нажмите Ctrl+C или «Копировать» в меню.';
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(ok, fail);
+      } else { fail(); }
+    } catch (e) { fail(); }
+  });
+})();
+</script>
+
+</body></html>
